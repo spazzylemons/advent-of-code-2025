@@ -1,4 +1,5 @@
 module Day1 (part1, part2) where
+import qualified Data.Text as T
 
 data DialState = DialState
   { count :: Int
@@ -11,16 +12,16 @@ dialSize = 100
 defaultDialState :: DialState
 defaultDialState = DialState { count = 0, position = 50 }
 
-parseDialTurn :: String -> Int
+parseDialTurn :: T.Text -> Int
 parseDialTurn line =
-  case line of
+  case T.unpack line of
     'L':amt -> -(read amt)
     'R':amt -> (read amt)
     _ -> error "Failed to parse line"
 
-parseInput :: String -> [Int]
+parseInput :: T.Text -> [Int]
 parseInput input =
-  map (parseDialTurn) (lines input)
+  map (parseDialTurn) (T.lines input)
 
 flipPosition :: Int -> Int -> Int
 flipPosition pos turn
@@ -50,7 +51,7 @@ checkClick (DialState { count, position }) turn =
     , position = (flipPosition newPosition turn)
     }
 
-part1 :: String -> Int
+part1 :: T.Text -> Int
 part1 input =
   let
     turns = parseInput input
@@ -58,7 +59,7 @@ part1 input =
   in
     count
 
-part2 :: String -> Int
+part2 :: T.Text -> Int
 part2 input =
   let
     turns = parseInput input

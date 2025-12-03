@@ -11,7 +11,9 @@ common warnings
 executable aoc2025
     import:           warnings
     main-is:          Main.hs
-    other-modules:    Day1
+    other-modules:
+        Day1,
+        Day2,
     build-depends:
         base ^>=4.20.2.0,
         advent-of-code-api ^>=0.2.10.0,

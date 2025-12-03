@@ -5,6 +5,7 @@ import Advent
 import qualified Data.Text as T
 
 import qualified Day1
+import qualified Day2
 
 userAgent :: AoCUserAgent
 userAgent = AoCUserAgent
@@ -25,18 +26,19 @@ getOpts = do
   key <- getEnv "AOC_SESSION_KEY"
   return ((defaultAoCOpts userAgent 2025 key) { _aCache = Just "cache" })
 
-getInput :: Int -> IO String
+getInput :: Int -> IO T.Text
 getInput day = do
   opts <- getOpts
   input <- runAoC opts $ AoCInput (mkDay_ (toInteger day))
   case input of
     Left err -> fail ("Failed to get input: " ++ (show err))
-    Right result -> return (T.unpack result)
+    Right result -> return result
 
-getResults :: Int -> String -> (Int, Int)
+getResults :: Int -> T.Text -> (Int, Int)
 getResults day input =
   case day of
     1 -> (Day1.part1 input, Day1.part2 input)
+    2 -> (Day2.part1 input, Day2.part2 input)
     _ -> (0, 0)
 
 main :: IO ()
