@@ -6,6 +6,7 @@ import qualified Data.Text as T
 
 import qualified Day1
 import qualified Day2
+import qualified Day3
 
 userAgent :: AoCUserAgent
 userAgent = AoCUserAgent
@@ -39,6 +40,7 @@ getResults day input =
   case day of
     1 -> (Day1.part1 input, Day1.part2 input)
     2 -> (Day2.part1 input, Day2.part2 input)
+    3 -> (Day3.part1 input, Day3.part2 input)
     _ -> (0, 0)
 
 main :: IO ()
