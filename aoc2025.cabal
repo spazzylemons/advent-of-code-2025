@@ -15,9 +15,11 @@ executable aoc2025
         Day1,
         Day2,
         Day3,
+        Day4,
     build-depends:
         base ^>=4.20.2.0,
+        containers ^>= 0.7,
         advent-of-code-api ^>=0.2.10.0,
-        text ^>=2.1.3
+        text ^>=2.1.3,
     hs-source-dirs:   app
     default-language: GHC2024
