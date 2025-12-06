@@ -1,6 +1,8 @@
+{-# LANGUAGE AllowAmbiguousTypes #-}
 module Main (main) where
 
 import System.Environment (getEnv, getArgs)
+import System.Exit (exitFailure)
 import Advent
 import qualified Data.Text as T
 
@@ -9,6 +11,7 @@ import Day2
 import Day3
 import Day4
 import Day5
+import Day6
 import Util
 
 userAgent :: AoCUserAgent
@@ -33,20 +36,42 @@ getInput day = do
   Right input <- runAoC opts $ AoCInput (mkDay_ (toInteger day))
   return input
 
-runPuzzle :: Puzzle a => (T.Text -> Maybe a) -> T.Text -> IO ()
-runPuzzle parser input = do
-  Just puzzle <- pure (parser input)
+runPuzzle :: Puzzle a => a -> IO ()
+runPuzzle puzzle = do
   putStrLn ("Part 1: " ++ (show . part1 $ puzzle))
   putStrLn ("Part 2: " ++ (show . part2 $ puzzle))
+
+parsePuzzle :: Puzzle a => T.Text -> IO a
+parsePuzzle text =
+  case parseInput text of
+    Just puzzle -> return puzzle
+    Nothing -> do
+      putStrLn "Failed to parse input"
+      exitFailure
 
 main :: IO ()
 main = do
   day <- getDay
   input <- getInput day
   case day of
-    1 -> (runPuzzle (parseInput :: (T.Text -> Maybe Day1Puzzle)) input)
-    2 -> (runPuzzle (parseInput :: (T.Text -> Maybe Day2Puzzle)) input)
-    3 -> (runPuzzle (parseInput :: (T.Text -> Maybe Day3Puzzle)) input)
-    4 -> (runPuzzle (parseInput :: (T.Text -> Maybe Day4Puzzle)) input)
-    5 -> (runPuzzle (parseInput :: (T.Text -> Maybe Day5Puzzle)) input)
-    _ -> putStrLn ("Day " ++ (show day) ++ " not supported")
+    1 -> do
+      p :: Day1Puzzle <- parsePuzzle input
+      runPuzzle p
+    2 -> do
+      p :: Day2Puzzle <- parsePuzzle input
+      runPuzzle p
+    3 -> do
+      p :: Day3Puzzle <- parsePuzzle input
+      runPuzzle p
+    4 -> do
+      p :: Day4Puzzle <- parsePuzzle input
+      runPuzzle p
+    5 -> do
+      p :: Day5Puzzle <- parsePuzzle input
+      runPuzzle p
+    6 -> do
+      p :: Day6Puzzle <- parsePuzzle input
+      runPuzzle p
+    _ -> do
+      putStrLn ("Day " ++ (show day) ++ " not implemented")
+      exitFailure
