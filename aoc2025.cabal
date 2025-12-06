@@ -17,6 +17,7 @@ executable aoc2025
         Day3,
         Day4,
         Day5,
+        Util,
     build-depends:
         base ^>=4.20.2.0,
         containers ^>= 0.7,

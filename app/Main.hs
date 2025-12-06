@@ -4,11 +4,12 @@ import System.Environment (getEnv, getArgs)
 import Advent
 import qualified Data.Text as T
 
-import qualified Day1
-import qualified Day2
-import qualified Day3
-import qualified Day4
-import qualified Day5
+import Day1
+import Day2
+import Day3
+import Day4
+import Day5
+import Util
 
 userAgent :: AoCUserAgent
 userAgent = AoCUserAgent
@@ -18,10 +19,7 @@ userAgent = AoCUserAgent
 
 getDay :: IO Int
 getDay = do
-  args <- getArgs
-  arg <- case args of
-    (x:_) -> pure x
-    [] -> fail "Day to run not given"
+  (arg:_) <- getArgs
   return ((read arg) :: Int)
 
 getOpts :: IO AoCOpts
@@ -32,25 +30,23 @@ getOpts = do
 getInput :: Int -> IO T.Text
 getInput day = do
   opts <- getOpts
-  input <- runAoC opts $ AoCInput (mkDay_ (toInteger day))
-  case input of
-    Left err -> fail ("Failed to get input: " ++ (show err))
-    Right result -> return result
+  Right input <- runAoC opts $ AoCInput (mkDay_ (toInteger day))
+  return input
 
-getResults :: Int -> T.Text -> (Int, Int)
-getResults day input =
-  case day of
-    1 -> (Day1.part1 input, Day1.part2 input)
-    2 -> (Day2.part1 input, Day2.part2 input)
-    3 -> (Day3.part1 input, Day3.part2 input)
-    4 -> (Day4.part1 input, Day4.part2 input)
-    5 -> (Day5.part1 input, Day5.part2 input)
-    _ -> (0, 0)
+runPuzzle :: Puzzle a => (T.Text -> Maybe a) -> T.Text -> IO ()
+runPuzzle parser input = do
+  Just puzzle <- pure (parser input)
+  putStrLn ("Part 1: " ++ (show . part1 $ puzzle))
+  putStrLn ("Part 2: " ++ (show . part2 $ puzzle))
 
 main :: IO ()
 main = do
   day <- getDay
   input <- getInput day
-  let (part1, part2) = getResults day input
-  putStrLn ("Part 1: " ++ (show part1))
-  putStrLn ("Part 2: " ++ (show part2))
+  case day of
+    1 -> (runPuzzle (parseInput :: (T.Text -> Maybe Day1Puzzle)) input)
+    2 -> (runPuzzle (parseInput :: (T.Text -> Maybe Day2Puzzle)) input)
+    3 -> (runPuzzle (parseInput :: (T.Text -> Maybe Day3Puzzle)) input)
+    4 -> (runPuzzle (parseInput :: (T.Text -> Maybe Day4Puzzle)) input)
+    5 -> (runPuzzle (parseInput :: (T.Text -> Maybe Day5Puzzle)) input)
+    _ -> putStrLn ("Day " ++ (show day) ++ " not supported")

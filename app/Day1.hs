@@ -1,10 +1,13 @@
-module Day1 (part1, part2) where
+module Day1 (Day1Puzzle(..)) where
 import qualified Data.Text as T
+import Util
 
 data DialState = DialState
   { count :: Int
   , position :: Int
   }
+
+newtype Day1Puzzle = Day1Puzzle [Int]
 
 dialSize :: Int
 dialSize = 100
@@ -12,16 +15,16 @@ dialSize = 100
 defaultDialState :: DialState
 defaultDialState = DialState { count = 0, position = 50 }
 
-parseDialTurn :: T.Text -> Int
+parseDialTurn :: T.Text -> Maybe Int
 parseDialTurn line =
   case T.unpack line of
-    'L':amt -> -(read amt)
-    'R':amt -> (read amt)
-    _ -> error "Failed to parse line"
+    'L':amt -> Just (-(read amt))
+    'R':amt -> Just (read amt)
+    _ -> Nothing
 
-parseInput :: T.Text -> [Int]
-parseInput input =
-  map (parseDialTurn) (T.lines input)
+parseInput1 :: T.Text -> Maybe [Int]
+parseInput1 input =
+  sequence $ (parseDialTurn <$> (T.lines input))
 
 flipPosition :: Int -> Int -> Int
 flipPosition pos turn
@@ -51,18 +54,17 @@ checkClick (DialState { count, position }) turn =
     , position = (flipPosition newPosition turn)
     }
 
-part1 :: T.Text -> Int
-part1 input =
-  let
-    turns = parseInput input
-    DialState { count } = foldl checkZero defaultDialState turns
-  in
-    count
+instance Puzzle Day1Puzzle where
+  parseInput input = do
+    turns <- parseInput1 input
+    return (Day1Puzzle turns)
 
-part2 :: T.Text -> Int
-part2 input =
-  let
-    turns = parseInput input
-    DialState { count } = foldl checkClick defaultDialState turns
-  in
+  part1 (Day1Puzzle turns) =
     count
+    where
+      DialState { count } = foldl checkZero defaultDialState turns
+
+  part2 (Day1Puzzle turns) =
+    count
+    where
+      DialState { count } = foldl checkClick defaultDialState turns

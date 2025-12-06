@@ -1,13 +1,12 @@
-module Day4 (part1, part2) where
+module Day4 (Day4Puzzle(..)) where
 import qualified Data.Text as T
 import qualified Data.Set as Set
+import Util
 
 type Point = (Int, Int)
 type Grid = Set.Set Point
 
-parseInput :: T.Text -> Grid
-parseInput input =
-  parseInput' Set.empty 0 (T.lines input)
+newtype Day4Puzzle = Day4Puzzle Grid
 
 parseInput' :: Grid -> Int -> [T.Text] -> Grid
 parseInput' grid _ [] = grid
@@ -55,10 +54,12 @@ countRemovals grid acc =
       let newGrid = foldl (flip Set.delete) grid removable in
         countRemovals newGrid $ length removable + acc
 
-part1 :: T.Text -> Int
-part1 input =
-  length . getRemovable $ parseInput input
+instance Puzzle Day4Puzzle where
+  parseInput input =
+    Just (Day4Puzzle (parseInput' Set.empty 0 (T.lines input)))
 
-part2 :: T.Text -> Int
-part2 input =
-  countRemovals (parseInput input) 0
+  part1 (Day4Puzzle grid) =
+    length (getRemovable grid)
+
+  part2 (Day4Puzzle grid) =
+    countRemovals grid 0

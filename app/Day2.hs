@@ -1,9 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Day2 (part1, part2) where
+module Day2 (Day2Puzzle(..)) where
 import qualified Data.Text as T
+import Util
 
 type IdRange = (Int, Int)
 type Input = [IdRange]
+
+newtype Day2Puzzle = Day2Puzzle Input
 
 toDigits :: Int -> [Int]
 toDigits x
@@ -52,24 +55,18 @@ sumInvalidIds :: (Int -> Bool) -> Int -> IdRange -> Int
 sumInvalidIds test acc (a, b) =
   acc + (sum $ filter test [a..b])
 
-parseRange :: T.Text -> IdRange
-parseRange line =
-  case T.splitOn "-" line of
-    a:b:[] -> (read $ T.unpack a, read $ T.unpack b)
-    _ -> error "invalid range"
+parseRange :: T.Text -> Maybe IdRange
+parseRange line = do
+  (a:b:[]) <- pure (T.splitOn "-" line)
+  return (read $ T.unpack a, read $ T.unpack b)
 
-parseInput :: T.Text -> Input
-parseInput input =
-  map parseRange $ T.splitOn "," input
+instance Puzzle Day2Puzzle where
+  parseInput input = do
+    ranges <- sequence $ parseRange <$> T.splitOn "," input
+    return (Day2Puzzle ranges)
 
-part1 :: T.Text -> Int
-part1 input =
-  foldl (sumInvalidIds isInvalidIdP1) 0 ranges
-  where
-    ranges = parseInput input
+  part1 (Day2Puzzle ranges) =
+    foldl (sumInvalidIds isInvalidIdP1) 0 ranges
 
-part2 :: T.Text -> Int
-part2 input =
-  foldl (sumInvalidIds isInvalidIdP2) 0 ranges
-  where
-    ranges = parseInput input
+  part2 (Day2Puzzle ranges) =
+    foldl (sumInvalidIds isInvalidIdP2) 0 ranges
