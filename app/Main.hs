@@ -12,6 +12,7 @@ import Day3
 import Day4
 import Day5
 import Day6
+import Day7
 import Util
 
 userAgent :: AoCUserAgent
@@ -71,6 +72,9 @@ main = do
       runPuzzle p
     6 -> do
       p :: Day6Puzzle <- parsePuzzle input
+      runPuzzle p
+    7 -> do
+      p :: Day7Puzzle <- parsePuzzle input
       runPuzzle p
     _ -> do
       putStrLn ("Day " ++ (show day) ++ " not implemented")
