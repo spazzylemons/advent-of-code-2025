@@ -20,6 +20,7 @@ executable aoc2025
         Day6,
         Day7,
         Day8,
+        Day9,
         Util,
     build-depends:
         base ^>=4.20.2.0,
