@@ -22,6 +22,7 @@ executable aoc2025
         Day8,
         Day9,
         Day10,
+        Day11,
         Util,
     build-depends:
         advent-of-code-api ^>=0.2.10.0,
